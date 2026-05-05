@@ -8,121 +8,150 @@
 <style>
 body {
   font-family: "Noto Sans Bengali", sans-serif;
-  background: #f2f2f2;
-  padding: 20px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .card {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 25px;
+  border-radius: 15px;
+  width: 100%;
   max-width: 420px;
-  margin: auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 h2 {
   text-align: center;
-}
-
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  font-size: 16px;
-}
-
-button {
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-}
-
-.result {
-  margin-top: 10px;
-  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .note {
+  text-align: center;
   font-size: 13px;
   color: gray;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.calc-btn {
+  background: #007bff;
+  color: white;
+}
+
+.reset-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.result {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
 }
 </style>
-
 </head>
 
 <body>
 
+<div class="container">
 <div class="card">
+
 <h2>📊 খতিয়ান অংশ ক্যালকুলেটর</h2>
+<p class="note">👉 প্রথমে মিউটেশন, তারপর আগত খতিয়ান দিন</p>
 
-<p class="note">👉 যেকোনো ক্রমে সংখ্যা দিলেও সিস্টেম নিজে ঠিক করে নিবে</p>
-
-<label>আগত খতিয়ানের মোট জমি</label>
-<input type="text" id="total" placeholder="যেমন: 0.3200">
+<label>মিউটেশন খতিয়ানের মোট জমি</label>
+<input type="text" id="mutation" placeholder="যেমন: 0.053625">
 
 <select id="u1">
 <option value="acre">একর</option>
 <option value="shotok">শতক</option>
 </select>
 
-<label>মিউটেশন খতিয়ানের মোট জমি</label>
-<input type="text" id="own" placeholder="যেমন: 0.053625">
+<label>আগত খতিয়ানের মোট জমি</label>
+<input type="text" id="incoming" placeholder="যেমন: 0.3200">
 
 <select id="u2">
 <option value="acre">একর</option>
 <option value="shotok">শতক</option>
 </select>
 
-<button onclick="calc()">হিসাব করুন</button>
-<button onclick="resetAll()">রিসেট</button>
+<button class="calc-btn" onclick="calc()">হিসাব করুন</button>
+<button class="reset-btn" onclick="resetAll()">রিসেট</button>
 
 <div class="result" id="out"></div>
 
 </div>
+</div>
 
 <script>
-function toAcre(value, unit) {
-  return unit === "shotok" ? value / 100 : value;
+function toAcre(v,u){
+  return u==="shotok"?v/100:v;
 }
 
-function parseBanglaNumber(str) {
-  const bn = "০১২৩৪৫৬৭৮৯";
-  const en = "0123456789";
-  return str.replace(/[০-৯]/g, d => en[bn.indexOf(d)]);
+function parseBN(str){
+  const bn="০১২৩৪৫৬৭৮৯";
+  const en="0123456789";
+  return str.replace(/[০-৯]/g,d=>en[bn.indexOf(d)]);
 }
 
-function calc() {
-  let total = parseBanglaNumber(document.getElementById("total").value);
-  let own = parseBanglaNumber(document.getElementById("own").value);
+function calc(){
+  let m=parseFloat(parseBN(mutation.value));
+  let i=parseFloat(parseBN(incoming.value));
 
-  let t = toAcre(parseFloat(total), u1.value);
-  let o = toAcre(parseFloat(own), u2.value);
-
-  if (!t || !o) {
-    out.innerHTML = "⚠️ সঠিক সংখ্যা দিন";
+  if(!m || !i){
+    out.innerHTML="⚠️ সঠিক সংখ্যা দিন";
     return;
   }
 
-  // auto swap
-  if (o > t) {
-    let temp = t;
-    t = o;
-    o = temp;
-  }
+  let mA=toAcre(m,u1.value);
+  let iA=toAcre(i,u2.value);
 
-  let share = o / t;
-  let percent = share * 100;
+  let share=mA/iA;
+  let percent=share*100;
+  let remain=iA-mA;
 
-  out.innerHTML =
-    "অংশ: " + share.toFixed(3) +
-    "<br>শতাংশ: " + percent.toFixed(2) + "%";
+  out.innerHTML=
+  "অংশ: "+share.toFixed(3)+
+  "<br>শতাংশ: "+percent.toFixed(2)+"%"+
+  "<br>বাকি জমি: "+remain.toFixed(6)+" একর";
 }
 
-function resetAll() {
-  total.value = "";
-  own.value = "";
-  out.innerHTML = "";
+function resetAll(){
+  mutation.value="";
+  incoming.value="";
+  out.innerHTML="";
 }
 </script>
 
