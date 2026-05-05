@@ -10,7 +10,6 @@ body {
   font-family: "Noto Sans Bengali", sans-serif;
   background: linear-gradient(135deg, #4facfe, #00f2fe);
   margin: 0;
-  padding: 0;
 }
 
 .container {
@@ -31,7 +30,6 @@ body {
 
 h2 {
   text-align: center;
-  margin-bottom: 10px;
 }
 
 .note {
@@ -79,6 +77,7 @@ button {
   padding: 10px;
   background: #f8f9fa;
   border-radius: 8px;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -120,6 +119,7 @@ function toAcre(v,u){
   return u==="shotok"?v/100:v;
 }
 
+// বাংলা সংখ্যা → ইংরেজি
 function parseBN(str){
   const bn="০১২৩৪৫৬৭৮৯";
   const en="0123456789";
@@ -138,14 +138,21 @@ function calc(){
   let mA=toAcre(m,u1.value);
   let iA=toAcre(i,u2.value);
 
-  let share=mA/iA;
-  let percent=share*100;
-  let remain=iA-mA;
+  // swap logic (উল্টা দিলে ঠিক করবে)
+  if(mA > iA){
+    let temp = mA;
+    mA = iA;
+    iA = temp;
+  }
 
-  out.innerHTML=
-  "অংশ: "+share.toFixed(3)+
-  "<br>শতাংশ: "+percent.toFixed(2)+"%"+
-  "<br>বাকি জমি: "+remain.toFixed(6)+" একর";
+  let share = mA / iA;
+  let percent = share * 100;
+  let remain = iA - mA;
+
+  out.innerHTML =
+  "অংশ: " + share.toFixed(5) +
+  "<br>শতাংশ: " + percent.toFixed(5) + "%" +
+  "<br>বাকি জমি: " + remain.toFixed(5) + " একর";
 }
 
 function resetAll(){
