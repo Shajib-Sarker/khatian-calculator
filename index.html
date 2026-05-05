@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>খতিয়ান ক্যালকুলেটর</title>
+
+<style>
+body {font-family:sans-serif;background:#f2f2f2;padding:20px;}
+.card {background:white;padding:20px;border-radius:12px;max-width:420px;margin:auto;}
+h2 {text-align:center;}
+input,select,button {width:100%;padding:10px;margin:6px 0;}
+button {background:#007bff;color:white;border:none;border-radius:5px;}
+.result {margin-top:10px;font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>📊 খতিয়ান অংশ ক্যালকুলেটর</h2>
+
+<label>দাগের মোট জমি</label>
+<input type="number" id="total">
+
+<select id="u1">
+<option value="acre">একর</option>
+<option value="shotok">শতক</option>
+</select>
+
+<label>তোমার জমি</label>
+<input type="number" id="own">
+
+<select id="u2">
+<option value="acre">একর</option>
+<option value="shotok">শতক</option>
+</select>
+
+<button onclick="calc()">হিসাব করুন</button>
+<button onclick="resetAll()">রিসেট</button>
+
+<div class="result" id="out"></div>
+</div>
+
+<script>
+function toAcre(v,u){return u==="shotok"?v/100:v;}
+
+function calc(){
+let t=toAcre(parseFloat(total.value),u1.value);
+let o=toAcre(parseFloat(own.value),u2.value);
+
+if(!t||!o){out.innerHTML="⚠️ তথ্য দিন";return;}
+if(o>t){out.innerHTML="❌ জমি বেশি দেখাচ্ছে";return;}
+
+let s=o/t;
+out.innerHTML="অংশ: "+s.toFixed(3)+"<br>শতাংশ: "+(s*100).toFixed(2)+"%";
+}
+
+function resetAll(){
+total.value="";own.value="";out.innerHTML="";
+}
+</script>
+
+</body>
+</html>
